@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 :root {
   --bg: #090D18;
   --card: #0d1828;
@@ -10,7 +11,11 @@
   --muted: #6b7a99;
 }
 
-
+@theme {
+  --font-syne: var(--font-syne);
+  --font-dm: var(--font-dm);
+  --font-instrument: var(--font-instrument);
+}
 
 body {
   background-color: var(--bg);

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import { Syne, DM_Sans,Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
@@ -8,7 +8,12 @@ const inter = Inter({
   weight: ["400"],
 });
 
-
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-instrument",
+  style: ["normal", "italic"],
+});
 const syne = Syne({
   subsets: ["latin"],
   variable: "--font-syne",
@@ -26,6 +31,7 @@ export const metadata: Metadata = {
   description: "Shop now — Pick, Order, Ready in less than 48 Hours.",
 };
 
+
 export default function RootLayout({
   children,
 }: {
@@ -33,7 +39,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${syne.variable} ${dmSans.variable} ${inter.className}`}>{children}</body>
+      
+      <body  className={`${inter.className} ${syne.variable} ${dmSans.variable} ${instrumentSerif.variable} `}>{children}</body>
     </html>
   );
 }
