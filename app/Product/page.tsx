@@ -4,37 +4,45 @@ import Link from "next/link"
 import ProductNavbar from "../components/ProductNavbar";
 import { useState } from "react"
 
-
-{/* varibale declaration  */ }
-type Product = {
-    id: number
-    name: string
-    price: number
-    image: string
-    available: boolean
-}
-{/* the array used to test the product grid */ }
-const products: Product[] = [
-    { id: 1, name: "Samsung Galaxy A54", price: 75.000, image: "/s-l1200 1.svg", available: true },
-    { id: 2, name: "iPhone 13", price: 180.000 , image: "/phone 2 .svg", available: false },
-    { id: 3, name: "Asus VivoBook 15", price: 105.000 , image: "/laptop 1.svg", available: true },
-    { id: 4, name: "HP Laptop i5", price: 120.000 , image: "/laptop 2.svg", available: true },
-    { id: 5, name: "USB-C Fast Charging Cable", price: 1.200 , image: "/usbcable.svg", available: false },
-    { id: 6, name: "HDMI Cable 2m", price: 1.500 , image: "/hdmicable.svg", available: false },
-    
-]
+import { products } from "@/app/lib/products"
 
 
+
+{/* i chnaged the location of the test data there in lib/products */ }
 
 
 export default function Page() {
+    {/* all the const needed for the app to work for overly and serch function */ }
+    const [search, setSearch] = useState("")
     const [open, setOpen] = useState(false)
+    const [categoryopen, categorysetOpen] = useState(false)
+    const menuOptions = [
+        { label: "Categories", onClick: () => categorysetOpen(!categoryopen)},
+        {label: "Recent",   onClick: () => {console.log("Sorting by recent")}},        
+        {label: "Old",onClick: () => { console.log("Sorting by old")}},
+        { label: "Most requested",onClick: () => { console.log("Sorting by Most requested")}},
+    ];
+  
+    const categoryoption = [
+        { name: 'phone', src: 'phone.svg', onClick: () => console.log("sorting by categories 'phone'") },
+        { name: 'Laptop', src: 'Laptops.svg', onClick: () => console.log("sorting by categories 'phone'") },
+        { name: 'Wires', src: 'Wires.svg', onClick: () => console.log("sorting by categories 'Wires'") },
+        { name: 'Accessories', src: 'Accessories.svg', onClick: () => console.log("sorting by categories 'Accessories'") },
+        { name: 'Camera', src: 'Camera.svg', onClick: () => console.log("sorting by categories 'Camera'") },
+        { name: 'Bags', src: 'Bags.svg', onClick: () => console.log("sorting by categories 'Bags'") },
+
+
+
+    ];
+    const filtered = products.filter((product) =>
+    product.name.toLowerCase().includes(search.toLowerCase()))   
+
     return (
-        
+       
         <main>
-            
+    
             {/* the navigation bar on top of the screne */}
-            <ProductNavbar />
+            <ProductNavbar search={search} setSearch={setSearch} />
             <section className="min-h-screen bg-[#ebebf2]">
                 <div className="flex flex-row items-start px-16 pt-4">
                     {/* the top left side :titel/filter etc */}
@@ -47,7 +55,7 @@ export default function Page() {
                         <div className="flex flex-row gap-16">
                             <div className=" flex items-center justify-center gap-2">
                                 <Image src="/sort line.svg" alt="filter" width={16} height={16} />
-                                <button onClick={() => setOpen(!open)} className=" font-inter font-normal text-[13.3px]  tracking-normal  text-black" >filter</button>
+                                <button onClick={() => setOpen(!open)}  className=" font-inter font-normal text-[13.3px]  tracking-normal  text-black" >filter</button>
                             </div>
                             <div className=" flex items-center justify-center ml-auto">
                                 <Link href="/#" className=" font-inter font-normal text-[13.3px] tracking-normal text-black" >Find factories</Link>
@@ -76,9 +84,9 @@ export default function Page() {
                 </div>
                 {/* the product desplay grid */}
                 <div className="grid grid-cols-4 gap-12 mt-[8%] px-16 py-4">
-                    {products.map((product) => (
+                    {filtered.map((product) => (
                         <div key={product.id} className="flex flex-col gap-2 bg-[#F8F8F8] rounded-sm p-4">
-                            <Link href={`/product/${product.id}`} >
+                            <Link href={`/Product/${product.id}`} >
                                 <h2 className="text-black font-bold">{product.name}</h2>
                                 <p className="text-black ">{product.price.toFixed(3)} DA</p>
                                 <div className="relative w-full aspect-square">
@@ -94,30 +102,42 @@ export default function Page() {
                     ))}
                 </div>
             </section>
-            {/* the product filter overly */}
+            {/* the product filter overly it does not filter for now only the serch bar does */}
             {open && (
-                <div className="absolute top-34 left-34 bg-[#F4F4F4] border-none rounded-xl p-2 flex flex-col gap-1 z-10">
-                    {["Categories", "Recent", "Old", "Most requested"].map((option) => (
-                        <div key={option} className="flex flex-row gap-2">
+                <div className="absolute top-20 left-30 bg-[#F4F4F4] border-none rounded-xl p-2 flex flex-col gap-1 z-10">
+                    {menuOptions.map((option) => (
+                        <div key={option.label} className="flex flex-row items-center gap-2">
                             <Image src="/Vector.svg" alt="vector" height={8} width={8} />
-                        <button
 
-            
-                            className="whitespace-nowrap text-sm text-black text-left px-2 py-1.5 rounded-lg hover:bg-[#ebebf2]"
-                            onClick={() => {
-                                console.log("Sort by:", option)
-                                setOpen(false)
-                            }}
-                        >
-                            {option}
-                        </button>
-                        <div className="flex w-full justify-end px-4 ">
-                          <Image src="/arrow filter.svg" alt="vector" height={24} width={24} />
-                          </div>
+                            <button
+                                className="whitespace-nowrap text-sm text-black text-left px-2 py-1.5 rounded-lg hover:bg-[#ebebf2] "
+                                onClick={() => { option.onClick(); }} >
+                                {option.label}
+                            </button>
+
+                            <div className="flex w-full justify-end px-4">
+                                <Image src="/arrow filter.svg" alt="arrow" height={24} width={24} />
+                            </div>
                         </div>
                     ))}
                 </div>
             )}
+            {/* ik i will change the icon another time or u can change them if u want  */ }
+            {categoryopen && (
+                <div className="gap-8 absolute bg-[#F4F4F4] border-none rounded-xl p-4 top-20 left-85  z-10">
+                    <h1 className="text-black font-bold text-sm ">Categories for you</h1>
+                    <div className=" grid grid-cols-3 gap-4 ">
+                        {categoryoption.map((option) => (
+                            <div key={option.name} className="">
+                                <button className="hover:bg-[#ebebf2]" onClick={() => { option.onClick(); }}>
+                                    <Image src={option.src} alt={option.name} height={45} width={48} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
         </main>
 
     )

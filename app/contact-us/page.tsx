@@ -22,11 +22,11 @@ export default function Page() {
                 {/* ── RIGHT COLUMN ── */}
                 <div className="flex flex-col flex-2">
                     <div className="mt-[5%] ml-[40%] mb-[5%] grid w-fit grid-cols-3 gap-x-[32] ">
-                        <Link className="underline" href="/contact">Facebook
+                        <Link className="underline" href="https://fr.pinterest.com/thegreatcat/white-cats/">Facebook
                         </Link>
                         <Link className="underline" href="https://www.instagram.com/_chichi.nia_29/">Instagram
                         </Link>
-                        <Link className="underline" href="/contact">LinkedIn
+                        <Link className="underline" href="https://solo-leveling.fandom.com/wiki/Igris">LinkedIn
                         </Link>
                     </div>
                     <div className="mt-[5%] ml-[30%] mb-[5%] grid w-fit grid-cols-3 gap-x-[32] ">

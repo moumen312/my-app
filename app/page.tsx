@@ -99,10 +99,10 @@ export default function Home() {
 
             {/* Buttons */}
             <div className="flex flex-row mt-6 items-center gap-4 px-6 md:px-0 md:ml-[10%]">
-              <button className="w-[247px] h-[53px] border bg-white border-white hover:brightness-125 text-[#001125]"
+              <a href="/Authentification/Register" className="flex items-center justify-center w-[247px] h-[53px] border bg-white border-white hover:brightness-125 text-[#001125]"
                 style={{ fontFamily: "var(--font-dm-sans)", fontWeight: 600, fontSize: "15px", borderRadius: "8px" }}>
                 Create your account now
-              </button>
+              </a>
               <Link href="/Product" >
                 <button className="w-[247px] h-[53px] border-none bg-transparent outline-none hover:brightness-125"
                   style={{ fontFamily: "var(--font-dm-sans)", fontWeight: 500, fontSize: "14px", color: "#60A5FA" }}>
