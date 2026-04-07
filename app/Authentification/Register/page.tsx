@@ -33,7 +33,7 @@ export default function Page() {
                         Login </button>
                 </div>
                 <div className="flex flex-row self-start px-6 ">
-                    <a href="/Authentification" className="text-sm">dont have an acount ?</a>
+                    <a href="/Authentification" className="text-sm">you have an acount ?</a>
                 </div>
             </div>
         </section>
