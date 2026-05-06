@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabaseClient } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { Package, DollarSign, Tag, ImageIcon, FileText, Loader2, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,6 +29,7 @@ export default function AddProductForm({ onSuccess }: { onSuccess?: () => void }
     setError(null);
 
     try {
+      const supabase = getSupabaseClient();
       const { error: insertError } = await supabase
         .from('products')
         .insert([

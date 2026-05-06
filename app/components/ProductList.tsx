@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useMemo } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabaseClient } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 import { Loader2 } from 'lucide-react';
 import { Search, Tag, ExternalLink,ShoppingCart } from 'lucide-react';
@@ -40,6 +40,7 @@ export default function ProductList() {
   useEffect(() => {
     async function fetchCategories() {
       try {
+        const supabase = getSupabaseClient();
         const { data, error } = await supabase.from('products').select('category');
         if (error) throw error;
 
@@ -61,6 +62,7 @@ export default function ProductList() {
       setLoading(true);
       setError(null);
       try {
+        const supabase = getSupabaseClient();
         if (currentSort === 'popular') {
           const { data, error } = await supabase
             .from('products')
