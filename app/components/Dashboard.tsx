@@ -1,4 +1,5 @@
 
+"use client";
 import { useAuth } from '../contexts/AuthContext';
 import { LogOut, User, Mail, ShieldCheck, Clock, ExternalLink, BarChart3, Package } from 'lucide-react';
 import { motion } from "framer-motion";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabaseClient } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { BarChart3, Package, DollarSign, ShoppingCart,Trash2, Edit3, Loader2, AlertCircle, TrendingUp, Inbox, Save, X} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
@@ -35,6 +35,7 @@ export default function SellerDashboard() {
   async function fetchSellerData() {
     setLoading(true);
     try {
+      const supabase = getSupabaseClient();
       // 1. Fetch Seller Products
       const { data: myProducts, error: prodError } = await supabase
         .from('products')
@@ -81,6 +82,7 @@ export default function SellerDashboard() {
     if (!confirm('Are you sure you want to delete this product? Careful: If this product has been sold, you might not be able to delete it for record integrity.')) return;
     
     try {
+      const supabase = getSupabaseClient();
       const { error } = await supabase.from('products').delete().eq('id', id);
       if (error) {
         if (error.code === '23503') {
@@ -97,6 +99,7 @@ export default function SellerDashboard() {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const supabase = getSupabaseClient();
       const { error } = await supabase
         .from('products')
         .update({

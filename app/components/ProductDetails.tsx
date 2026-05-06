@@ -1,9 +1,8 @@
 "use client";
-import {createRoot} from 'react-dom/client';
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
-import { supabase } from '../lib/supabase';
+import { getSupabaseClient } from '../lib/supabase';
 import { useCart } from '../contexts/CartContext';
 import { ChevronLeft, ShoppingCart, ShieldCheck, Truck, RotateCcw, Loader2, Star } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,6 +23,7 @@ export default function ProductDetails() {
       if (!id) return;
       setLoading(true);
       try {
+        const supabase = getSupabaseClient();
         const { data, error: fetchError } = await supabase
           .from('products')
           .select('*')

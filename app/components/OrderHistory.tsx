@@ -1,5 +1,6 @@
+"use client";
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabaseClient } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Package, Calendar, MapPin, 
@@ -27,6 +28,8 @@ interface Order {
   status: 'pending' | 'paid' | 'delivered' | 'cancelled';
   wilaya: string;
   city: string;
+  address: string;
+  payment_method: string;
   created_at: string;
   order_items: OrderItem[];
 }
@@ -46,6 +49,7 @@ export default function OrderHistory() {
   async function fetchOrders() {
     setLoading(true);
     try {
+      const supabase = getSupabaseClient();
       const { data, error } = await supabase
         .from('orders')
         .select(`

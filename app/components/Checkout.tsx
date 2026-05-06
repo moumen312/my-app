@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
+import { getSupabaseClient } from '../lib/supabase';
 import { MapPin, CreditCard, Truck, CheckCircle2, Loader2, ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,6 +38,7 @@ export default function Checkout() {
 
     setLoading(true);
     try {
+      const supabase = getSupabaseClient();
       // 1. Create Order
       const { data: order, error: orderError } = await supabase
         .from('orders')

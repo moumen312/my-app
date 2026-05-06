@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabaseClient } from '../lib/supabase';
 import { Mail, Lock, UserPlus, LogIn, AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +20,7 @@ export default function AuthForm() {
     setSuccess(null);
 
     try {
+      const supabase = getSupabaseClient();
       if (isLogin) {
         const { error: loginError } = await supabase.auth.signInWithPassword({
           email,
