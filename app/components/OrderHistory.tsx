@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -27,6 +28,8 @@ interface Order {
   status: 'pending' | 'paid' | 'delivered' | 'cancelled';
   wilaya: string;
   city: string;
+  address: string;
+  payment_method: string;
   created_at: string;
   order_items: OrderItem[];
 }

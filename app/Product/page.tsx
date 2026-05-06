@@ -1,34 +1,18 @@
 "use client";
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React from 'react';
 import Image from 'next/image'
-import { AuthProvider, useAuth } from '../contexts/AuthContext';
-import { CartProvider, useCart } from '../contexts/CartContext';
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import AuthForm from '../components/AuthForm';
-import Dashboard from '../components/Dashboard';
+import Link from 'next/link';
+import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 import ProductList from '../components/ProductList';
-import AddProductForm from '../components/AddProductForm';
-import ProductDetails from '../components/ProductDetails';
-import CartView from '../components/CartView';
-import { Loader2, Shield, Store, PlusCircle, LayoutDashboard, Menu, X, ShoppingBag,BarChart3 ,Package} from 'lucide-react';
+import { Loader2, Store, PlusCircle, LayoutDashboard, Menu, X, ShoppingBag, BarChart3, Package } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from 'react';
-import OrderHistory from '../components/OrderHistory';
-import SellerDashboard from '../components/SellerDashboard';
-import Checkout from '../components/Checkout';
 
-
-function AppContent() {
+export default function ProductPage() {
   const { user, loading } = useAuth();
   const { totalItems } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   if (loading) {
     return (
@@ -42,52 +26,49 @@ function AppContent() {
   }
 
   const navigation = [
-    { name: 'Marketplace', icon: Store, path: '/product' },
+    { name: 'Marketplace', icon: Store, path: '/Product' },
     { name: 'Sell Item', icon: PlusCircle, path: '/sell' },
     { name: 'Seller Hub', icon: BarChart3, path: '/seller-hub' },
     { name: 'Orders', icon: Package, path: '/orders' },
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Enhanced Navigation */}
       <nav className="bg-[#0d1828] border-b border-gray-100 py-4 px-8 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div 
+          <Link 
+            href="/Product"
             className="flex items-center gap-2 cursor-pointer group"
-            onClick={() => navigate('/product')}
           >
-            <div className=" ">
+            <div>
               <Image src="/logo.svg" alt="logo" width={136} height={39} />
             </div>
-      
-          </div>
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
             {navigation.map((item) => (
-              <button
+              <Link
                 key={item.path}
-                onClick={() => navigate(item.path)}
+                href={item.path}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-                  isActive(item.path)
+                  false
                     ? 'bg-blue-50 text-blue-600' 
                     : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
                 <item.icon className="w-4 h-4" />
                 {item.name}
-              </button>
+              </Link>
             ))}
           </div>
 
           <div className="flex items-center gap-4">
             {/* Cart Trigger */}
-            <button 
-              onClick={() => navigate('/cart')}
+            <Link 
+              href="/cart"
               className="relative p-2 text-gray-500 hover:bg-gray-50 rounded-xl transition-all"
             >
               <ShoppingBag className="w-6 h-6" />
@@ -96,12 +77,12 @@ function AppContent() {
                   {totalItems}
                 </span>
               )}
-            </button>
+            </Link>
 
             {user ? (
-              <div 
+              <Link 
+                href="/dashboard"
                 className="flex items-center gap-2 cursor-pointer"
-                onClick={() => navigate('/dashboard')}
               >
                 <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200">
                   <LayoutDashboard className="w-4 h-4" />
@@ -109,14 +90,14 @@ function AppContent() {
                 <span className="hidden sm:inline text-sm font-medium text-gray-700 max-w-[120px] truncate">
                   {user.email?.split('@')[0]}
                 </span>
-              </div>
+              </Link>
             ) : (
-              <button 
-                onClick={() => navigate('/dashboard')}
+              <Link 
+                href="/Authentification"
                 className="text-sm font-bold text-blue-600 hover:text-blue-700 font-sans"
               >
                 Sign In
-              </button>
+              </Link>
             )}
 
             {/* Mobile Menu Toggle */}
@@ -140,21 +121,19 @@ function AppContent() {
             >
               <div className="flex flex-col gap-2 pb-4">
                 {navigation.map((item) => (
-                  <button
+                  <Link
                     key={item.path}
-                    onClick={() => {
-                      navigate(item.path);
-                      setIsMenuOpen(false);
-                    }}
+                    href={item.path}
+                    onClick={() => setIsMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                      isActive(item.path)
+                      false
                         ? 'bg-blue-50 text-blue-600' 
                         : 'text-gray-500 hover:bg-gray-50'
                     }`}
                   >
                     <item.icon className="w-5 h-5" />
                     {item.name}
-                  </button>
+                  </Link>
                 ))}
               </div>
             </motion.div>
@@ -163,44 +142,9 @@ function AppContent() {
       </nav>
 
       <main className="flex-1 container mx-auto px-4 py-12">
-        <Routes>
-          <Route path="/product" element={<ProductList />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<CartView />} />
-          <Route path="/checkout" element={user ? <Checkout /> : <AuthForm />} />
-          <Route 
-            path="/sell" 
-            element={user ? <AddProductForm onSuccess={() => navigate('/')} /> : <AuthForm />} 
-          />
-          <Route 
-            path="/dashboard" 
-            element={user ? <Dashboard /> : <AuthForm />} 
-          />
-           <Route 
-            path="/seller-hub" 
-            element={user ? <SellerDashboard /> : <AuthForm />} 
-          />
-          <Route 
-            path="/orders" 
-            element={user ? <OrderHistory /> : <AuthForm />} 
-          />
-        </Routes>
+        <ProductList />
       </main>
-
-     
     </div>
-  );
-}
-
-export default function App() {
-  return (
-    <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <AppContent />
-        </CartProvider>
-      </AuthProvider>
-    </BrowserRouter>
   );
 }
 
