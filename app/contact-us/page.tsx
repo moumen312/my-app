@@ -9,7 +9,7 @@ export default function Page() {
     return (
         <main>
             <Navbar/>
-        <section className="relative min-h-screen bg-[#60A5FA]">
+        <section className="relative min-h-screen bg-[#090D18]">
             <div className="flex pb-[20] ml-[5%]  border-b-2 w-[90%] 
        "style={{ borderColor: "#FFFFFF" }}>
             </div>

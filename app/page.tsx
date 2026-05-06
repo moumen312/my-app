@@ -31,11 +31,11 @@ const items = [
   { image: "/Bags.svg", text: "Bags", link: "/page6" },
 ];
 const items2 = [
-  { src: "/best seller.svg", link: "/Product" },
-  { src: "/trendeing.svg", link: "/Product" },
-  { src: "/top rated.svg", link: "/Product" },
-  { src: "/best value.svg", link: "/Product" },
-  { src: "/poupulr.svg", link: "/Product" },
+  { src: "/best seller.svg", link: "/product" },
+  { src: "/trendeing.svg", link: "/product" },
+  { src: "/top rated.svg", link: "/product" },
+  { src: "/best value.svg", link: "/product" },
+  { src: "/poupulr.svg", link: "/product  " },
 ];
 const topRow = items2.slice(0, 3)
 const bottomRow = items2.slice(3, 5)
@@ -102,8 +102,11 @@ export default function Home() {
               <a href="/Authentification/Register" className="flex items-center justify-center w-[247px] h-[53px] border bg-white border-white hover:brightness-125 text-[#001125]"
                 style={{ fontFamily: "var(--font-dm-sans)", fontWeight: 600, fontSize: "15px", borderRadius: "8px" }}>
                 Create your account now
+                <div>
+                  
+                </div>
               </a>
-              <Link href="/Product" >
+              <Link href="#section2" >
                 <button className="w-[247px] h-[53px] border-none bg-transparent outline-none hover:brightness-125"
                   style={{ fontFamily: "var(--font-dm-sans)", fontWeight: 500, fontSize: "14px", color: "#60A5FA" }}>
                   <span className="inline-flex items-center gap-2">
@@ -129,7 +132,7 @@ export default function Home() {
               }}>
 
               {/* text/icons inside here */}
-              <div className="absolute inset-0 flex flex-col items-left  gap-4 p-6">
+              <div className="absolute inset-0 flex flex-col items-left mt- gap-4 p-6">
                 <span className="text-[#3B82F6] font-xl text-[11.2px] leading-[17.92px] tracking-[1.12px] align-middle uppercase "
                   style={{ fontFamily: "var(--font-dm-sans)" }}>What you get with OpenSlate</span>
               </div>
@@ -140,7 +143,7 @@ export default function Home() {
                   />
                   <div className="font-medium text-[14.4px] leading-[23.04px] tracking-normal align-middle"
                     style={{ fontFamily: "var(--font-dm-sans)" }}>  {/* the 2 lines of text   */}
-                    <p className="">Fast shopping</p>
+                    <p className="text-white">Fast shopping</p>
                     <p className="font-normal text-[#475569] text-[12.8px] leading-[19.2px] tracking-normal align-middle"
                       style={{ fontFamily: "var(--font-dm-sans)" }}>
                       Find and buy products quickly and easily.
@@ -154,7 +157,7 @@ export default function Home() {
                     src="/clook.svg" alt="clock" width={34} height={34} />
                   <div className="font-medium text-[14.4px] leading-[23.04px] tracking-normal align-middle"
                     style={{ fontFamily: "var(--font-dm-sans)" }}>  {/* the 2 lines of text   */}
-                    <p className="">Smart recommendations</p>
+                    <p className="text-white">Smart recommendations</p>
                     <p className="font-normal text-[#475569] text-[12.8px] leading-[19.2px] tracking-normal align-middle"
                       style={{ fontFamily: "var(--font-dm-sans)" }}>
                       Get suggestions tailored to your needs.
@@ -168,7 +171,7 @@ export default function Home() {
                     src="/securty.svg" alt="clock" width={34} height={34} />
                   <div className="font-medium text-[14.4px] leading-[23.04px] tracking-normal align-middle"
                     style={{ fontFamily: "var(--font-dm-sans)" }}>  {/* the 2 lines of text   */}
-                    <p className="">Secure payment</p>
+                    <p className="text-white  ">Secure payment</p>
                     <p className="font-normal text-[#475569] text-[12.8px] leading-[19.2px] tracking-normal align-middle"
                       style={{ fontFamily: "var(--font-dm-sans)" }}>
 
@@ -183,7 +186,7 @@ export default function Home() {
                     src="/assistance.svg" alt="clock" width={34} height={34} />
                   <div className="font-medium text-[14.4px] leading-[23.04px] tracking-normal align-middle"
                     style={{ fontFamily: "var(--font-dm-sans)" }}>  {/* the 2 lines of text   */}
-                    <p className="">AI assistant</p>
+                    <p className="text-white">AI assistant</p>
                     <p className="font-normal text-[#475569] text-[12.8px] leading-[19.2px] tracking-normal align-middle"
                       style={{ fontFamily: "var(--font-dm-sans)" }}>
                       Get instant help anytime.
@@ -201,7 +204,7 @@ export default function Home() {
         </div>
       </section>
       {/* ─── Section 2 ─── */}
-      <section className="relative min-h-screen bg-[#0F172A]">
+      <section className="relative min-h-screen bg-[#0F172A]" id="section2">
 
         {/* Categories label */}
         <p
@@ -214,7 +217,7 @@ export default function Home() {
         {/* Section headers */}
         <div className="flex flex-col ">
           <h1
-            className={`${instrumentSerif.className} mt-[100] ml-[15%]  md:text-left md:ml-[225] text-[50px] md:text-[60.8px] font-normal leading-tight md:leading-[65.66px]`}
+            className={`${instrumentSerif.className} text-white mt-[100] ml-[15%]  md:text-left md:ml-[225] text-[50px] md:text-[60.8px] font-normal leading-tight md:leading-[65.66px]`}
           >
             Whatever in you mind
           </h1>
@@ -388,11 +391,11 @@ export default function Home() {
         <div className="flex flex-col">
           <div className="flex flex-col gap-6">
             <h1
-              className={`${instrumentSerif.className} mt-12 text-center text-[60.8px]  font-normal leading-tight md:leading-[65.66px]`}
+              className={`${instrumentSerif.className} mt-12 text-white text-center text-[60.8px]  font-normal leading-tight md:leading-[65.66px]`}
             >
               Most Popular Products
 
-            </h1>
+            </h1> 
 
             <h1
               className={`${instrumentSerif.className}  text-center   text-[50px] md:text-[60.8px] font-normal italic leading-tight md:leading-[65.66px]`}
