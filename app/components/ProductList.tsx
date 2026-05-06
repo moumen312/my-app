@@ -131,9 +131,9 @@ export default function ProductList() {
           />
         </div>
         <div className="flex items-center gap-4 w-full md:w-auto">
-          <div className= 'w-[100] bg-black mx-10'>
+          
             < FilterDropdown categories={categories} />
-            </div >
+          
         </div>
       </div>
 

@@ -78,7 +78,7 @@ export default function FilterDropdown({ categories }: FilterDropdownProps) {
     <div className="relative inline-block" ref={dropdownRef}>
   <button
     onClick={() => setIsOpen(!isOpen)}
-    className={`flex items-center justify-center min-w-[160px] h-22   px-4 ml-2 
+    className={`flex items-center justify-center min-w-[160px] h-12   px-4 ml-2 
       rounded-xl text-sm font-semibold transition-all border whitespace-nowrap
       ${isOpen || currentCategory !== 'All' || currentSort !== 'newest'
         ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-200'
