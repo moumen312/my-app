@@ -26,7 +26,7 @@ export default function ProductPage() {
   }
 
   const navigation = [
-    { name: 'Marketplace', icon: Store, path: '/Product' },
+    { name: 'Marketplace', icon: Store, path: '/product' },
     { name: 'Sell Item', icon: PlusCircle, path: '/sell' },
     { name: 'Seller Hub', icon: BarChart3, path: '/seller-hub' },
     { name: 'Orders', icon: Package, path: '/orders' },
@@ -39,7 +39,7 @@ export default function ProductPage() {
       <nav className="bg-[#0d1828] border-b border-gray-100 py-4 px-8 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Link 
-            href="/Product"
+            href="/product"
             className="flex items-center gap-2 cursor-pointer group"
           >
             <div>
