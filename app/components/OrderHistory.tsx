@@ -213,7 +213,7 @@ export default function OrderHistory() {
             <Package className="w-16 h-16 text-gray-200 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-gray-400 font-sans">No orders yet</h3>
             <button 
-              onClick={() => router.push('/Product')}
+              onClick={() => router.push('/product')}
 
               className="mt-6 text-blue-600 font-bold hover:underline"
             >
