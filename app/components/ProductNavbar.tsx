@@ -17,7 +17,7 @@ const navigation = [
 ];
 
 export default function ProductNavbar() {
-    const { user } = useAuth();
+    const { user, profile } = useAuth();
     const { totalItems } = useCart();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const router = useRouter();
@@ -25,6 +25,14 @@ export default function ProductNavbar() {
 
 
     const isActive = (path: string) => pathname === path;
+    const isSeller = profile?.role === 'seller';
+
+    const filteredNavigation = navigation.filter(item => {
+        if (!isSeller && (item.path === '/sell' || item.path === '/seller-hub')) {
+            return false;
+        }
+        return true;
+    });
 
 
     return (
@@ -39,7 +47,7 @@ export default function ProductNavbar() {
 
                 {/* Desktop Nav */}
                 <div className="hidden md:flex items-center gap-6">
-                    {navigation.map((item) => (
+                    {filteredNavigation.map((item) => (
                         <button
                             key={item.path}
                             onClick={() => router.push(item.path)}
@@ -77,7 +85,7 @@ export default function ProductNavbar() {
                                 <LayoutDashboard className="w-4 h-4" />
                             </div>
                             <span className="hidden sm:inline text-sm font-medium text-gray-700 max-w-[120px] truncate">
-                                {user.email?.split('@')[0]}
+                                {profile?.username || user.email?.split('@')[0]}
                             </span>
                         </div>
                     ) : (
@@ -109,7 +117,7 @@ export default function ProductNavbar() {
                         className="md:hidden mt-4 overflow-hidden"
                     >
                         <div className="flex flex-col gap-2 pb-4">
-                            {navigation.map((item) => (
+                            {filteredNavigation.map((item) => (
                                 <button
                                     key={item.path}
                                     onClick={() => {

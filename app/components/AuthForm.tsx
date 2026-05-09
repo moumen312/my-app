@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { getSupabaseClient } from '../lib/supabase';
-import { Mail, Lock, UserPlus, LogIn, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Lock, UserPlus, LogIn, AlertCircle, Loader2, User, Briefcase } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,6 +9,8 @@ export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [role, setRole] = useState<'buyer' | 'seller'>('buyer');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -28,10 +30,21 @@ export default function AuthForm() {
         });
         if (loginError) throw loginError;
       } else {
+        if (username.length < 3 || username.length > 20) {
+          throw new Error('Username must be between 3 and 20 characters');
+        }
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+          throw new Error('Username can only contain letters, numbers, and underscores');
+        }
+
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
+            data: {
+              username,
+              role,
+            },
             // Adjust this if you want to skip email confirmation in testing
             emailRedirectTo: window.location.origin,
           }
@@ -62,6 +75,40 @@ export default function AuthForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
+        {!isLogin && (
+          <>
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-700 ml-1">Username</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  required={!isLogin}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+                  placeholder="your_username"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-gray-700 ml-1">Account Type</label>
+              <div className="relative">
+                <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value as 'buyer' | 'seller')}
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none appearance-none"
+                >
+                  <option value="buyer">Buyer</option>
+                  <option value="seller">Seller</option>
+                </select>
+              </div>
+            </div>
+          </>
+        )}
+
         <div className="space-y-1">
           <label className="text-sm font-medium text-gray-700 ml-1">Email</label>
           <div className="relative">
