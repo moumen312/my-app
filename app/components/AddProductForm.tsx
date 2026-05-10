@@ -23,31 +23,78 @@ export default function AddProductForm({ onSuccess }: { onSuccess?: () => void }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      console.warn("AddProductForm: No user found. Cannot submit.");
+      return;
+    }
     
     setLoading(true);
     setError(null);
 
+    console.log("AddProductForm: Starting submission", { 
+      userId: user.id, 
+      formData: { ...formData, price: parseFloat(formData.price) } 
+    });
+
     try {
       const supabase = getSupabaseClient();
-      const { error: insertError } = await supabase
-        .from('products')
-        .insert([
-          {
-            ...formData,
-            price: parseFloat(formData.price),
-            seller_id: user.id
-          }
-        ]);
+      console.log("AddProductForm: Supabase client initialized");
 
-      if (insertError) throw insertError;
-      
-      setSuccess(true);
-      setFormData({ title: '', description: '', price: '', image_url: '', category: '' });
-      if (onSuccess) setTimeout(onSuccess, 2000);
+      // Adding a timeout using AbortController to prevent indefinite hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort(new Error("Request timed out after 15 seconds"));
+      }, 15000);
+
+      try {
+        console.log("AddProductForm: Calling supabase.from('products').insert()");
+        
+        // Use .select() to force a response from Supabase instead of hanging on empty response
+        const { data, error: insertError } = await supabase
+          .from('products')
+          .insert([
+            {
+              ...formData,
+              price: parseFloat(formData.price),
+              seller_id: user.id
+            }
+          ])
+          .select()
+          .abortSignal(controller.signal);
+
+        console.log("AddProductForm: Supabase response received", { data, insertError });
+
+        if (insertError) {
+          console.error("AddProductForm: Insert error from Supabase", insertError);
+          throw insertError;
+        }
+
+        console.log("AddProductForm: Product added successfully");
+        setSuccess(true);
+        setFormData({ title: '', description: '', price: '', image_url: '', category: '' });
+        if (onSuccess) setTimeout(onSuccess, 2000);
+
+      } finally {
+        clearTimeout(timeoutId);
+      }
+
     } catch (err: any) {
-      setError(err.message || 'Error adding product');
+      console.error('AddProductForm: Caught error during submission', err);
+      // Ensure we extract a readable message even from nested Supabase errors
+      let errorMessage = 'An unexpected error occurred while adding the product.';
+      if (err.name === 'AbortError' || err.message?.includes('timed out')) {
+        errorMessage = 'The request timed out. Please check your connection and try again.';
+      } else if (err.message) {
+        errorMessage = err.message;
+      } else if (err.details) {
+         errorMessage = err.details;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      
+      setError(errorMessage);
     } finally {
+      console.log("AddProductForm: Resetting loading state");
       setLoading(false);
     }
   };
