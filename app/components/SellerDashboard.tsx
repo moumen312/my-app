@@ -34,6 +34,9 @@ export default function SellerDashboard() {
 
   async function fetchSellerData() {
     setLoading(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(new Error("Request timed out")), 15000);
+
     try {
       const supabase = getSupabaseClient();
       // 1. Fetch Seller Products
@@ -41,7 +44,8 @@ export default function SellerDashboard() {
         .from('products')
         .select('*')
         .eq('seller_id', user?.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .abortSignal(controller.signal);
 
       if (prodError) throw prodError;
 
@@ -49,7 +53,8 @@ export default function SellerDashboard() {
       const { data: items, error: itemsError } = await supabase
         .from('order_items')
         .select('product_id, quantity, price_at_purchase')
-        .eq('seller_id', user?.id);
+        .eq('seller_id', user?.id)
+        .abortSignal(controller.signal);
 
       if (itemsError) throw itemsError;
 
@@ -71,9 +76,12 @@ export default function SellerDashboard() {
         totalRevenue: totalRev,
         totalProducts: processedProducts.length
       });
-    } catch (err) {
-      console.error('Error fetching seller analytics:', err);
+    } catch (err: any) {
+      console.error('Error fetching seller analytics:', err.message || err);
+      // Fallback: don't crash, just show empty data so user can retry or refresh manually
+      if (!products.length) setProducts([]);
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   }

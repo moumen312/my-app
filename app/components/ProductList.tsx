@@ -61,12 +61,16 @@ export default function ProductList() {
     async function fetchProducts() {
       setLoading(true);
       setError(null);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(new Error("Request timed out")), 15000);
+
       try {
         const supabase = getSupabaseClient();
         if (currentSort === 'popular') {
           const { data, error } = await supabase
             .from('products')
-            .select('*, order_items(count)');
+            .select('*, order_items(count)')
+            .abortSignal(controller.signal);
 
           if (error) throw error;
 
@@ -80,7 +84,7 @@ export default function ProductList() {
           }
           setProducts(productsWithSales);
         } else {
-          let query = supabase.from('products').select('*');
+          let query = supabase.from('products').select('*').abortSignal(controller.signal);
 
           if (currentCategory !== 'All') {
             query = query.eq('category', currentCategory);
@@ -94,8 +98,11 @@ export default function ProductList() {
           setProducts(data || []);
         }
       } catch (err: any) {
-        setError(err.message || 'Failed to load products');
+        console.error('Error fetching products:', err.message || err);
+        setError(err.name === 'AbortError' ? 'Network timed out' : (err.message || 'Failed to load products'));
+        if (!products.length) setProducts([]);
       } finally {
+        clearTimeout(timeoutId);
         setLoading(false);
       }
     }

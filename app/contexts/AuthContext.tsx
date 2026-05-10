@@ -32,13 +32,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function initAuth() {
       try {
         const supabase = getSupabaseClient();
-        
+
         // Helper to fetch profile with timeout to prevent hanging
         const fetchProfile = async (userId: string, client: any) => {
           try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
-            
+            const timeoutId = setTimeout(() => {
+              console.warn(`[AuthContext]  fetchProfile timed out after 10s for user: ${userId}`);
+              controller.abort();
+            }, 10000); // 10s timeout
+
             try {
               const { data, error } = await client
                 .from('profiles')
@@ -46,14 +49,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 .eq('id', userId)
                 .single()
                 .abortSignal(controller.signal);
-                
-              if (error) throw error;
+
+              if (error) {
+                console.error(`[AuthContext]  fetchProfile DB error:`, error);
+                throw error;
+              }
               setProfile(data || null);
             } finally {
               clearTimeout(timeoutId);
             }
           } catch (err: any) {
-            console.error('[AuthContext] Error fetching profile:', err.message || err);
+            console.error('[AuthContext]  Error fetching profile:', err.message || err);
             // If it's just a network timeout on a background tab, do not wipe the existing profile
             if (err.name !== 'AbortError') {
               setProfile(null);
@@ -62,20 +68,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
 
         // Check active sessions and sets the user
-        const { data: { session } } = await supabase.auth.getSession();
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id, supabase);
-        } else {
-          setProfile(null);
+        try {
+          const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+          if (sessionError) {
+            console.error('[AuthContext]  Initial getSession error:', sessionError);
+            throw sessionError;
+          }
+          setSession(session);
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            await fetchProfile(session.user.id, supabase);
+          } else {
+            setProfile(null);
+          }
+        } catch (e) {
+          console.error('[AuthContext]  Initial session check failed:', e);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
 
         // Listen for changes on auth state (logged in, signed out, etc.)
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
-          console.log(`[AuthContext] Auth event received: ${event}`);
-          
           if (event === 'SIGNED_OUT') {
             setSession(null);
             setUser(null);
@@ -88,33 +101,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Background update - just update session/user without blocking the UI
             // and without unnecessarily re-fetching the profile.
             setSession(newSession);
-            setUser(newSession?.user ?? null);
+            setUser(prev => prev?.id === newSession?.user?.id ? prev : (newSession?.user ?? null));
             return;
           }
 
           // For SIGNED_IN or INITIAL_SESSION
           setLoading(true);
-          setSession(newSession);
-          setUser(newSession?.user ?? null);
-          
-          if (newSession?.user) {
-            await fetchProfile(newSession.user.id, supabase);
-          } else {
-            setProfile(null);
+
+          try {
+            setSession(newSession);
+            setUser(prev => prev?.id === newSession?.user?.id ? prev : (newSession?.user ?? null));
+
+            if (newSession?.user) {
+              // DEFER execution to break the Supabase GoTrueClient internal lock deadlock!
+              setTimeout(async () => {
+                try {
+                  await fetchProfile(newSession.user.id, supabase);
+                } catch (e) {
+                  console.error(`[AuthContext]  Error in deferred fetchProfile for event ${event}:`, e);
+                } finally {
+                  setLoading(false);
+                }
+              }, 0);
+            } else {
+              setProfile(null);
+              setLoading(false);
+            }
+          } catch (e) {
+            console.error(`[AuthContext]  Error handling auth event ${event}:`, e);
+            setLoading(false);
           }
-          setLoading(false);
         });
 
-        return () => subscription?.unsubscribe();
+        return () => {
+          subscription?.unsubscribe();
+        };
       } catch (err) {
-        console.error('[v0] Auth initialization error:', err);
+        console.error('[AuthContext]  Auth initialization fatal error:', err);
         setError(err instanceof Error ? err.message : 'Auth initialization failed');
         setLoading(false);
       }
     }
 
     const unsubscribe = initAuth();
-    
+
     return () => {
       unsubscribe?.then(unsub => unsub?.());
     };

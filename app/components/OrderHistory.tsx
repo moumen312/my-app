@@ -48,6 +48,9 @@ export default function OrderHistory() {
 
   async function fetchOrders() {
     setLoading(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(new Error("Request timed out")), 15000);
+
     try {
       const supabase = getSupabaseClient();
       const { data, error } = await supabase
@@ -63,13 +66,17 @@ export default function OrderHistory() {
           )
         `)
         .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .abortSignal(controller.signal);
 
       if (error) throw error;
       setOrders(data || []);
-    } catch (err) {
-      console.error('Error fetching orders:', err);
+    } catch (err: any) {
+      console.error('Error fetching orders:', err.message || err);
+      // Fallback behavior
+      if (!orders.length) setOrders([]);
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   }
