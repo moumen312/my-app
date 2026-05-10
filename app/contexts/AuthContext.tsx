@@ -18,6 +18,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+import { getSupabaseClient } from '../lib/supabase';
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -29,7 +31,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // This only runs in the browser
     async function initAuth() {
       try {
-        const { getSupabaseClient } = await import('../lib/supabase');
         const supabase = getSupabaseClient();
         
         // Helper to fetch profile
@@ -56,6 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Listen for changes on auth state (logged in, signed out, etc.)
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+          // Immediately set loading to true while we sync new state and fetch profile
+          setLoading(true);
           setSession(newSession);
           setUser(newSession?.user ?? null);
           if (newSession?.user) {
@@ -83,7 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
-      const { getSupabaseClient } = await import('../lib/supabase');
       const supabase = getSupabaseClient();
       await supabase.auth.signOut();
     } catch (err) {
