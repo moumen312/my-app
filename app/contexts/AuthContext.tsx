@@ -33,14 +33,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const supabase = getSupabaseClient();
         
-        // Helper to fetch profile
+        // Helper to fetch profile with timeout to prevent hanging
         const fetchProfile = async (userId: string, client: any) => {
           try {
-            const { data } = await client.from('profiles').select('*').eq('id', userId).single();
-            setProfile(data || null);
-          } catch (err) {
-            console.error('Error fetching profile:', err);
-            setProfile(null);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+            
+            try {
+              const { data, error } = await client
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .single()
+                .abortSignal(controller.signal);
+                
+              if (error) throw error;
+              setProfile(data || null);
+            } finally {
+              clearTimeout(timeoutId);
+            }
+          } catch (err: any) {
+            console.error('[AuthContext] Error fetching profile:', err.message || err);
+            // If it's just a network timeout on a background tab, do not wipe the existing profile
+            if (err.name !== 'AbortError') {
+              setProfile(null);
+            }
           }
         };
 
@@ -56,11 +73,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
 
         // Listen for changes on auth state (logged in, signed out, etc.)
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
-          // Immediately set loading to true while we sync new state and fetch profile
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+          console.log(`[AuthContext] Auth event received: ${event}`);
+          
+          if (event === 'SIGNED_OUT') {
+            setSession(null);
+            setUser(null);
+            setProfile(null);
+            setLoading(false);
+            return;
+          }
+
+          if (event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+            // Background update - just update session/user without blocking the UI
+            // and without unnecessarily re-fetching the profile.
+            setSession(newSession);
+            setUser(newSession?.user ?? null);
+            return;
+          }
+
+          // For SIGNED_IN or INITIAL_SESSION
           setLoading(true);
           setSession(newSession);
           setUser(newSession?.user ?? null);
+          
           if (newSession?.user) {
             await fetchProfile(newSession.user.id, supabase);
           } else {
