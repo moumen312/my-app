@@ -84,7 +84,7 @@ export default function ProductNavbar() {
                             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200">
                                 <LayoutDashboard className="w-4 h-4" />
                             </div>
-                            <span className="hidden sm:inline text-sm font-medium text-gray-700 max-w-[120px] truncate">
+                            <span className="hidden sm:inline text-sm font-medium text-white max-w-[120px] truncate">
                                 {profile?.username || user.email?.split('@')[0]}
                             </span>
                         </div>
