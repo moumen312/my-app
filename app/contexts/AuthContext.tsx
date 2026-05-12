@@ -5,7 +5,7 @@ import { User, Session } from '@supabase/supabase-js';
 interface Profile {
   id: string;
   username: string;
-  role: 'buyer' | 'seller';
+  role: 'buyer' | 'seller' | 'admin';
 }
 
 interface AuthContextType {

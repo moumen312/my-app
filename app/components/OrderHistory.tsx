@@ -16,6 +16,8 @@ interface OrderItem {
   product_id: string;
   quantity: number;
   price_at_purchase: number;
+  status: string;
+  delivered_at: string | null;
   products: {
     title: string;
     image_url: string;
@@ -183,7 +185,15 @@ export default function OrderHistory() {
                             />
                             <div>
                               <p className="font-bold text-gray-900 font-sans line-clamp-1">{item.products.title}</p>
-                              <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                              <div className="flex items-center gap-3">
+                                <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border ${getStatusStyle(item.status || 'pending')}`}>
+                                  {item.status || 'pending'}
+                                </span>
+                              </div>
+                              {item.delivered_at && (
+                                <p className="text-[10px] text-emerald-600 font-bold mt-1">Delivered on {new Date(item.delivered_at).toLocaleDateString()}</p>
+                              )}
                             </div>
                           </div>
                           <p className="font-bold text-gray-900 font-sans">

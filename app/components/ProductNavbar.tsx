@@ -1,5 +1,5 @@
 "use client";
-import { BarChart3, LayoutDashboard, Menu, Package, PlusCircle, ShoppingBag, Store, X } from 'lucide-react';
+import { BarChart3, LayoutDashboard, Menu, Package, PlusCircle, ShoppingBag, Store, X, ListOrdered, ShieldAlert } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
@@ -12,6 +12,8 @@ const navigation = [
     { name: 'Marketplace', icon: Store, path: '/product' },
     { name: 'Sell Item', icon: PlusCircle, path: '/sell' },
     { name: 'Seller Hub', icon: BarChart3, path: '/seller-hub' },
+    { name: 'Seller Orders', icon: ListOrdered, path: '/seller-hub/orders' },
+    { name: 'Admin Hub', icon: ShieldAlert, path: '/admin' },
     { name: 'Orders', icon: Package, path: '/orders' },
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
 ];
@@ -26,11 +28,26 @@ export default function ProductNavbar() {
 
     const isActive = (path: string) => pathname === path;
     const isSeller = profile?.role === 'seller';
+    const isAdmin = profile?.role === 'admin';
 
     const filteredNavigation = navigation.filter(item => {
-        if (!isSeller && (item.path === '/sell' || item.path === '/seller-hub')) {
+        // Admin logic
+        if (isAdmin) {
+            // Admin should NOT see seller-specific links (they have Admin Hub)
+            if (item.path === '/sell' || item.path === '/seller-hub' || item.path === '/seller-hub/orders') {
+                return false;
+            }
+            return true;
+        }
+
+        // Non-admin logic
+        if (item.path === '/admin') return false;
+
+        // Buyer logic (can't see seller tools)
+        if (!isSeller && (item.path === '/sell' || item.path === '/seller-hub' || item.path === '/seller-hub/orders')) {
             return false;
         }
+        
         return true;
     });
 
@@ -52,8 +69,8 @@ export default function ProductNavbar() {
                             key={item.path}
                             onClick={() => router.push(item.path)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${isActive(item.path)
-                                    ? 'bg-blue-50 text-blue-600'
-                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                ? 'bg-blue-50 text-blue-600'
+                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                                 }`}
                         >
                             <item.icon className="w-4 h-4" />
@@ -125,8 +142,8 @@ export default function ProductNavbar() {
                                         setIsMenuOpen(false);
                                     }}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive(item.path)
-                                            ? 'bg-blue-50 text-blue-600'
-                                            : 'text-gray-500 hover:bg-gray-50'
+                                        ? 'bg-blue-50 text-blue-600'
+                                        : 'text-gray-500 hover:bg-gray-50'
                                         }`}
                                 >
                                     <item.icon className="w-5 h-5" />

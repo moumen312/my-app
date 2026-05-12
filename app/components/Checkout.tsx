@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { getSupabaseClient } from '../lib/supabase';
-import { MapPin, CreditCard, Truck, CheckCircle2, Loader2, ChevronLeft } from 'lucide-react';
+import { MapPin, CreditCard, Truck, CheckCircle2, Loader2, ChevronLeft, ShieldAlert } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -15,7 +15,7 @@ const ALGERIA_WILAYAS = [
 
 export default function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -26,6 +26,28 @@ export default function Checkout() {
     address: '',
     paymentMethod: 'COD'
   });
+
+  if (profile?.role === 'admin') {
+    return (
+      <div className="max-w-xl mx-auto py-20 px-4 text-center">
+        <div className="bg-white p-12 rounded-[40px] shadow-xl border border-red-100">
+          <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <ShieldAlert className="w-10 h-10 text-red-500" />
+          </div>
+          <h2 className="text-3xl font-black text-gray-900 mb-4 tracking-tight font-sans">Checkout Restricted</h2>
+          <p className="text-gray-500 mb-8 leading-relaxed font-sans">
+            As an administrator, you cannot make purchases on the platform. Please use a separate buyer account for testing or personal orders.
+          </p>
+          <button 
+            onClick={() => router.push('/product')}
+            className="w-full py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-black transition-all"
+          >
+            Back to Marketplace
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (cart.length === 0 && !success) {
     router.push('/cart');
@@ -57,8 +79,6 @@ export default function Checkout() {
       if (orderError) throw orderError;
 
       // 2. Create Order Items
-      // We need to fetch product info to get seller_id (or include it in cart context)
-      // For this example, we'll fetch them from DB based on cart IDs
       const { data: products } = await supabase
         .from('products')
         .select('id, seller_id')
@@ -107,7 +127,7 @@ export default function Checkout() {
             Thank you for your purchase. You can track your order in your dashboard.
           </p>
           <button 
-            onClick={() => router.push  ('/dashboard')}
+            onClick={() => router.push('/dashboard')}
             className="w-full py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-black transition-all"
           >
             Go to My Orders
