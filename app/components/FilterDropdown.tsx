@@ -143,7 +143,7 @@ export default function FilterDropdown({ categories }: FilterDropdownProps) {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -10 }}
-                        className="absolute left-full top-0 ml-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 origin-left"
+                        className="absolute left-full bottom-0 ml-4 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 origin-left"
                       >
                          <div className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                           Categories

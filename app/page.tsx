@@ -23,12 +23,12 @@ const instrumentSerif = Instrument_Serif({
 });
 
 const items = [
-  { image: "/phone.svg", text: "phone", link: "/page1" },
-  { image: "/Laptops.svg", text: "Laptops", link: "/page2" },
-  { image: "/Wires.svg", text: "Wires", link: "/page3" },
-  { image: "/Accessories.svg", text: "Accessories", link: "/page4" },
-  { image: "/Camera.svg", text: "Camera", link: "/page5" },
-  { image: "/Bags.svg", text: "Bags", link: "/page6" },
+  { image: "/phone.svg", text: "phone", link: "/product" },
+  { image: "/Laptops.svg", text: "Laptops", link: "/product" },
+  { image: "/Wires.svg", text: "Wires", link: "/product" },
+  { image: "/Accessories.svg", text: "Accessories", link: "/product" },
+  { image: "/Camera.svg", text: "Camera", link: "/product" },
+  { image: "/Bags.svg", text: "Bags", link: "/product" },
 ];
 const items2 = [
   { src: "/best seller.svg", link: "/product" },
@@ -63,7 +63,7 @@ export default function Home() {
 
             {/* Hero text */}
             <div className="flex flex-col  px-6 md:px-0">
-              <h1 className={`${instrumentSerif.className} ml-[10%] text-[60px] md:text-[60.8px] font-normal leading-tight md:leading-[65.66px]`}>
+              <h1 className={`${instrumentSerif.className} text-white ml-[10%] text-[60px] md:text-[60.8px] font-normal leading-tight md:leading-[65.66px]`}>
                 Shop now in Techy
               </h1>
               <h1 className={`${instrumentSerif.className} w-[645px] ml-[9.5%] text-[60px] md:text-[60.8px] font-normal italic leading-tight md:leading-[65.66px]`}>
@@ -99,7 +99,7 @@ export default function Home() {
 
             {/* Buttons */}
             <div className="flex flex-row mt-6 items-center gap-4 px-6 md:px-0 md:ml-[10%]">
-              <a href="/Authentification/Register" className="flex items-center justify-center w-[247px] h-[53px] border bg-white border-white hover:brightness-125 text-[#001125]"
+              <a href="/Authentification" className="flex items-center justify-center w-[247px] h-[53px] border bg-white border-white hover:brightness-125 text-[#001125]"
                 style={{ fontFamily: "var(--font-dm-sans)", fontWeight: 600, fontSize: "15px", borderRadius: "8px" }}>
                 Create your account now
                 <div>

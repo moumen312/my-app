@@ -10,18 +10,16 @@ export default function Page() {
         <main>
             <Navbar/>
         <section className="relative min-h-screen bg-[#090D18]">
-            <div className="flex pb-[20] ml-[5%]  border-b-2 w-[90%] 
-       "style={{ borderColor: "#FFFFFF" }}>
-            </div>
+            
             <div className="flex flex-row items-start px-0 ">
                 {/* ── LEFT COLUMN ── */}
-                <div className="flex flex-col w-fit flex-1">
+                <div className="flex flex-col w-fit flex-1 text-white">
                     <h1 className="ml-[25%] mt-12 font-inter font-normal text-[50px] leading-[100%] tracking-[0%] align-middle">Get in Touch</h1>
                     <p className="ml-[26%] mt-18 font-normal text-[39px] leading-[49.16px] w-[414]">We’re here to help! Contact us anytime for support, questionsor inquiries.</p>
                 </div>
                 {/* ── RIGHT COLUMN ── */}
-                <div className="flex flex-col flex-2">
-                    <div className="mt-[5%] ml-[40%] mb-[5%] grid w-fit grid-cols-3 gap-x-[32] ">
+                <div className="flex flex-col  flex-2">
+                    <div className="mt-[5%] text-white ml-[40%] mb-[5%] grid w-fit grid-cols-3 gap-x-[32] ">
                         <Link className="underline" href="https://fr.pinterest.com/thegreatcat/white-cats/">Facebook
                         </Link>
                         <Link className="underline" href="https://www.instagram.com/_chichi.nia_29/">Instagram
@@ -103,7 +101,7 @@ export default function Page() {
                                 </div>
                             </div>
                             <div className="flex flex-col  flex-2 ml-[20%]">
-                                <Link className=" underline" href="/contact">Privacy Policy</Link>
+                                <Link className=" text-white underline" href="/contact">Privacy Policy</Link>
 
                             </div>
                         </div>

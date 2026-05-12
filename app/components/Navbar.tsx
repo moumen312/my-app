@@ -19,7 +19,7 @@ export default function Navbar() {
         <a href='/Authentification' className='hover:brightness-125 text-[14px] font-medium leading-[22.4px] tracking-normal align-middle dmSans.className bg-transparent border-none text-[var(--authntication)] mr-[40px]'>
           Login
         </a>
-        <a href='/Authentification/Register' className='border-none hover:brightness-125 text-[14px] font-medium leading-[22.4px] tracking-normal align-middle bg-transparent  text-[var(--authntication)] mr-[40px]'>
+        <a href='/Authentification' className='border-none hover:brightness-125 text-[14px] font-medium leading-[22.4px] tracking-normal align-middle bg-transparent  text-[var(--authntication)] mr-[40px]'>
           Signup
         </a>
       </div>
